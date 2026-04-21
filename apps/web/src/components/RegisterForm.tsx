@@ -40,7 +40,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     try {
       await register(email, password, name);
       onSuccess?.();
-    } catch (err) {
+    } catch (_err) {
       setLocalError(error || 'Registration failed');
     }
   };
@@ -118,11 +118,6 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       <div className="form-divider">
         <span>or</span>
       </div>
-
-      <button type="button" className="form-button google" disabled={loading}>
-        <span className="google-icon">🔵</span>
-        Sign up with Google
-      </button>
 
       <div className="form-footer">
         <p>

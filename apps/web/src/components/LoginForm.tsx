@@ -81,11 +81,6 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         <span>or</span>
       </div>
 
-      <button type="button" className="form-button google" disabled={loading}>
-        <span className="google-icon">🔵</span>
-        Continue with Google
-      </button>
-
       <div className="form-footer">
         <p>
           Don't have an account?{' '}

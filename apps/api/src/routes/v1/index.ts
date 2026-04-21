@@ -4,7 +4,6 @@ import authRouter from './auth.route.js';
 import docsRouter from './docs.route.js';
 import teacherRouter from './teacher.route.js';
 import teacherPositionRouter from './teacherPosition.route.js';
-// import demoRouter from './demo.route.js';
 import { env } from '@/config/env/env.js';
 
 const rootRouterV1: Router = Router();

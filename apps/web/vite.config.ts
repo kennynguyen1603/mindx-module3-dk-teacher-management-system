@@ -15,6 +15,14 @@ export default defineConfig({
         target: 'http://localhost:8080/api/v1',
         changeOrigin: true,
       },
+      '/teachers': {
+        target: 'http://localhost:8080/api/v1',
+        changeOrigin: true,
+      },
+      '/teacher-positions': {
+        target: 'http://localhost:8080/api/v1',
+        changeOrigin: true,
+      },
     },
   },
 });

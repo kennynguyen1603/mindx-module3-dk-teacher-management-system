@@ -12,17 +12,17 @@ import {
 
 const teacherPositionRouter: Router = Router();
 
-// Get all active positions (for dropdown)
-teacherPositionRouter.get(
-  '/active',
-  wrapAsyncHandler(teacherPositionController.getAllActive),
-);
-
 // Create position
 teacherPositionRouter.post(
   '/',
   validate(createTeacherPositionSchema),
   wrapAsyncHandler(teacherPositionController.create),
+);
+
+// Get all active positions (for dropdown) - must be before /:id
+teacherPositionRouter.get(
+  '/active',
+  wrapAsyncHandler(teacherPositionController.getAllActive),
 );
 
 // List positions with pagination

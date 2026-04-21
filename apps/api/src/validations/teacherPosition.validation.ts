@@ -51,33 +51,26 @@ export const updateTeacherPositionSchema = {
 
 export const listTeacherPositionSchema = {
   query: z.object({
-    page: z
-      .string({ message: 'Page must be a number' })
+    page: z.coerce
+      .number({ message: 'Page must be a number' })
+      .int('Page must be an integer')
+      .min(1, 'Page must be at least 1')
       .optional()
-      .transform((val) => (val ? parseInt(val, 10) : 1))
-      .pipe(
-        z
-          .number()
-          .int('Page must be an integer')
-          .min(1, 'Page must be at least 1'),
-      ),
-    limit: z
-      .string({ message: 'Limit must be a number' })
+      .default(1),
+    limit: z.coerce
+      .number({ message: 'Limit must be a number' })
+      .int('Limit must be an integer')
+      .min(1, 'Limit must be at least 1')
+      .max(100, 'Limit must be at most 100')
       .optional()
-      .transform((val) => (val ? parseInt(val, 10) : 10))
-      .pipe(
-        z
-          .number()
-          .int('Limit must be an integer')
-          .min(1, 'Limit must be at least 1')
-          .max(100, 'Limit must be at most 100'),
-      ),
+      .default(10),
     isActive: z
       .enum(['true', 'false'], { message: 'isActive must be true or false' })
       .transform((val) => val === 'true')
       .optional(),
   }),
 };
+
 
 export const getTeacherPositionSchema = {
   params: z.object({

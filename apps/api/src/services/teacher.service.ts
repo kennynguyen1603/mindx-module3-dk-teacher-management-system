@@ -2,15 +2,11 @@ import { ObjectId } from 'mongodb';
 import { teacherRepository } from '@/repositories/teacher.repository.js';
 import { teacherPositionRepository } from '@/repositories/teacherPosition.repository.js';
 import { userRepository } from '@/repositories/user.repository.js';
+
 import { ITeacherDocument, IDegree } from '@/models/teacher.model.js';
 import { IUserDocument } from '@/models/user.model.js';
 import { UserStatus, UserRole, AuthProvider } from '@mern/shared';
-import {
-  ConflictError,
-  NotFoundError,
-  BadRequestError,
-} from '@/core/error.response.js';
-import { RESPONSE_MESSAGES } from '@/utils/constants.js';
+import { ConflictError, NotFoundError } from '@/core/error.response.js';
 
 class TeacherService {
   private static instance: TeacherService;
@@ -159,7 +155,10 @@ class TeacherService {
       phoneNumber: user.phoneNumber || '',
       address: user.address || '',
       identity: user.identity || '',
+      dob: user.dob,
       isActive: teacher.isActive,
+
+
       positions: positionDetails,
       degrees: teacher.degrees,
       startDate: teacher.startDate,
@@ -180,7 +179,8 @@ class TeacherService {
     page: number = 1,
     limit: number = 10,
   ): Promise<{ teachers: any[]; total: number }> {
-    let aggregationPipeline: any[] = [];
+    const aggregationPipeline: any[] = [];
+
 
     // Add search filter if provided
     if (filter?.search) {
@@ -213,7 +213,10 @@ class TeacherService {
       phoneNumber: teacher.user?.phoneNumber || '',
       address: teacher.user?.address || '',
       identity: teacher.user?.identity || '',
+      dob: teacher.user?.dob,
       isActive: teacher.isActive,
+
+
       positions: teacher.positionDetails || [],
       degrees: teacher.degrees || [],
       startDate: teacher.startDate,
@@ -314,7 +317,9 @@ class TeacherService {
       phoneNumber: user?.phoneNumber || '',
       address: user?.address || '',
       identity: user?.identity || '',
+      dob: user?.dob,
       isActive: updatedTeacher.isActive,
+
       positions: positionDetails,
       degrees: updatedTeacher.degrees,
       startDate: updatedTeacher.startDate,

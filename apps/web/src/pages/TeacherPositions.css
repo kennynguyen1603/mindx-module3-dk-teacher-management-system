@@ -1,0 +1,393 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap');
+
+.pos-page {
+  font-family: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
+  background: #fff;
+  min-height: 100%;
+}
+
+/* ── Toolbar ── */
+.pos-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.pos-btn-create {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  border: 1px solid #16a34a;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 13px;
+  font-family: inherit;
+  color: #16a34a;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.15s;
+}
+
+.pos-btn-create:hover {
+  background: #f0fdf4;
+}
+
+.pos-btn-refresh {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 13px;
+  font-family: inherit;
+  color: #475569;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.pos-btn-refresh svg {
+  width: 14px;
+  height: 14px;
+}
+
+.pos-btn-refresh:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+/* ── Table ── */
+.pos-table-wrap {
+  overflow-x: auto;
+}
+
+.pos-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.pos-table thead {
+  background: #f8fafc;
+}
+
+.pos-table th {
+  padding: 10px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  font-size: 12.5px;
+  border-bottom: 1px solid #e2e8f0;
+  border-top: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.pos-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #374151;
+  vertical-align: middle;
+}
+
+.pos-table tbody tr:hover {
+  background: #fafafa;
+}
+
+.pos-stt {
+  color: #6b7280;
+  width: 60px;
+  font-size: 12.5px;
+}
+
+.pos-code {
+  font-weight: 600;
+  width: 90px;
+}
+
+.pos-name {
+  font-weight: 500;
+}
+
+.pos-des {
+  color: #6b7280;
+  font-size: 12.5px;
+}
+
+.pos-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.pos-badge-on {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.pos-badge-off {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.pos-actions {
+  width: 50px;
+  text-align: center;
+}
+
+.pos-gear-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 5px;
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+}
+
+.pos-gear-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.pos-gear-btn:hover {
+  background: #f1f5f9;
+  color: #374151;
+}
+
+.pos-loading,
+.pos-empty {
+  text-align: center;
+  padding: 48px 20px;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.pos-page-error {
+  background: #fef2f2;
+  color: #dc2626;
+  padding: 10px 20px;
+  font-size: 13px;
+  border-bottom: 1px solid #fee2e2;
+}
+
+/* ── Drawer overlay ── */
+.pos-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 500;
+  display: flex;
+  justify-content: flex-end;
+  animation: pos-fade 0.2s ease;
+}
+
+@keyframes pos-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ── Drawer panel ── */
+.pos-drawer {
+  font-family: 'Be Vietnam Pro', system-ui, sans-serif;
+  width: min(400px, 90vw);
+  background: #fff;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  animation: pos-slide 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes pos-slide {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.pos-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+.pos-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 2px 7px;
+  border-radius: 4px;
+  line-height: 1;
+  font-weight: 300;
+  transition: background 0.15s, color 0.15s;
+}
+
+.pos-close:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.pos-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.pos-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.pos-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pos-field label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.pos-field input,
+.pos-field textarea {
+  border: 1px solid #e5e7eb;
+  border-radius: 5px;
+  padding: 9px 11px;
+  font-size: 13px;
+  font-family: inherit;
+  color: #1f2937;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  background: #fff;
+}
+
+.pos-field input:focus,
+.pos-field textarea:focus {
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.08);
+}
+
+.pos-field input.err,
+.pos-field textarea.err {
+  border-color: #ef4444;
+}
+
+.pos-err-msg {
+  font-size: 11.5px;
+  color: #ef4444;
+}
+
+.pos-field input:disabled {
+  background: #f9fafb;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+/* ── Toggle group ── */
+.pos-toggle-group {
+  display: flex;
+  width: fit-content;
+  border: 1px solid #e5e7eb;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.pos-toggle-btn {
+  padding: 7px 20px;
+  border: none;
+  background: #fff;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  color: #374151;
+  font-weight: 500;
+  transition: background 0.15s, color 0.15s;
+}
+
+.pos-toggle-btn:first-child {
+  border-right: 1px solid #e5e7eb;
+}
+
+.pos-toggle-active {
+  background: #4f46e5;
+  color: #fff;
+}
+
+.pos-toggle-off {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+/* ── Footer ── */
+.pos-footer {
+  margin-top: auto;
+  padding-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid #f3f4f6;
+}
+
+.pos-btn-save {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.pos-btn-save svg {
+  width: 15px;
+  height: 15px;
+}
+
+.pos-btn-save:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.pos-btn-save:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pos-error {
+  background: #fef2f2;
+  border: 1px solid #fee2e2;
+  color: #dc2626;
+  padding: 8px 12px;
+  border-radius: 5px;
+  font-size: 13px;
+}

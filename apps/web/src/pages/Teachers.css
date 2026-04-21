@@ -1,0 +1,380 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap');
+
+.t-page {
+  font-family: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
+  background: #fff;
+  min-height: 100%;
+}
+
+/* ── Toolbar ── */
+.t-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.t-search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 6px 12px;
+  background: #fff;
+  cursor: text;
+  margin-right: auto;
+  transition: border-color 0.15s;
+}
+
+.t-search-box:focus-within {
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.08);
+}
+
+.t-search-icon {
+  width: 15px;
+  height: 15px;
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
+.t-search-input {
+  border: none;
+  outline: none;
+  font-size: 13px;
+  color: #334155;
+  font-family: inherit;
+  width: 180px;
+  background: transparent;
+}
+
+.t-search-input::placeholder {
+  color: #94a3b8;
+}
+
+.t-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 13px;
+  font-family: inherit;
+  color: #475569;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.t-btn-ghost svg {
+  width: 14px;
+  height: 14px;
+}
+
+.t-btn-ghost:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.t-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  border: none;
+  border-radius: 6px;
+  background: #16a34a;
+  font-size: 13px;
+  font-family: inherit;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.15s;
+}
+
+.t-btn-primary svg {
+  width: 14px;
+  height: 14px;
+}
+
+.t-btn-primary:hover {
+  background: #15803d;
+}
+
+.t-error {
+  background: #fef2f2;
+  color: #dc2626;
+  padding: 10px 20px;
+  font-size: 13px;
+  border-bottom: 1px solid #fee2e2;
+}
+
+/* ── Table ── */
+.t-table-wrap {
+  overflow-x: auto;
+}
+
+.t-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.t-table thead {
+  background: #f8fafc;
+}
+
+.t-table th {
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  font-size: 12.5px;
+  white-space: nowrap;
+  border-bottom: 1px solid #e2e8f0;
+  border-top: 1px solid #e2e8f0;
+}
+
+.th-info {
+  font-size: 11px;
+  color: #94a3b8;
+  cursor: help;
+}
+
+.t-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #374151;
+  vertical-align: middle;
+}
+
+.t-table tbody tr:hover {
+  background: #fafafa;
+}
+
+.td-code {
+  font-size: 12.5px;
+  color: #374151;
+  font-weight: 400;
+  min-width: 100px;
+}
+
+/* ── Teacher cell ── */
+.teacher-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 180px;
+}
+
+.t-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  color: #1d4ed8;
+  flex-shrink: 0;
+  border: 1.5px solid #dbeafe;
+  overflow: hidden;
+}
+
+.t-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.t-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.t-info strong {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 13px;
+}
+
+.t-info span {
+  font-size: 11.5px;
+  color: #64748b;
+}
+
+/* ── Degree ── */
+.degree-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 12.5px;
+}
+
+.t-muted {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.t-na {
+  color: #94a3b8;
+  font-size: 12.5px;
+}
+
+/* ── Badges ── */
+.t-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-on {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.badge-off {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+/* ── Detail button ── */
+.t-btn-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: none;
+  background: transparent;
+  color: #374151;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.t-btn-detail svg {
+  width: 16px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+.t-btn-detail:hover {
+  background: #f0f9ff;
+  color: #0284c7;
+}
+
+/* ── Loading / Empty ── */
+.t-loading {
+  text-align: center;
+  padding: 52px 20px;
+  color: #94a3b8;
+}
+
+.t-loading div + span {
+  display: block;
+  font-size: 13px;
+}
+
+.t-empty {
+  text-align: center;
+  padding: 52px 20px;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.t-spinner {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #e2e8f0;
+  border-top-color: #16a34a;
+  border-radius: 50%;
+  animation: t-spin 0.6s linear infinite;
+  margin: 0 auto 10px;
+}
+
+@keyframes t-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Pagination ── */
+.t-pagination {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 20px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.t-total {
+  font-size: 12.5px;
+  color: #64748b;
+  margin-right: auto;
+}
+
+.t-pages {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.t-pg-btn {
+  min-width: 30px;
+  height: 30px;
+  padding: 0 6px;
+  border: 1px solid #e2e8f0;
+  border-radius: 5px;
+  background: #fff;
+  font-size: 13px;
+  color: #374151;
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.t-pg-btn:hover:not(:disabled):not(.active) {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.t-pg-btn.active {
+  background: #16a34a;
+  border-color: #16a34a;
+  color: #fff;
+  font-weight: 600;
+}
+
+.t-pg-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.t-perpage {
+  font-size: 12.5px;
+  color: #475569;
+  margin-left: 8px;
+  cursor: pointer;
+  border: 1px solid #e2e8f0;
+  border-radius: 5px;
+  padding: 4px 10px;
+  user-select: none;
+}

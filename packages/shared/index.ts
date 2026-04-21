@@ -130,7 +130,10 @@ export interface ITeacher {
   phoneNumber: string;
   address: string;
   identity: string;
+  dob: Date;
   isActive: boolean;
+
+
   positions: any[];
   degrees: IDegree[];
   startDate: Date;
@@ -145,12 +148,14 @@ export interface ICreateTeacherRequest {
   phoneNumber: string;
   address: string;
   identity: string;
-  dob: Date;
+  dob: Date | string;
+
   positions?: string[];
   degrees?: IDegree[];
   isActive?: boolean;
-  startDate: Date;
-  endDate?: Date;
+  startDate: Date | string;
+  endDate?: Date | string;
+
 }
 
 export interface IUpdateTeacherRequest {
@@ -159,12 +164,14 @@ export interface IUpdateTeacherRequest {
   phoneNumber?: string;
   address?: string;
   identity?: string;
-  dob?: Date;
+  dob?: Date | string;
+
   positions?: string[];
   degrees?: IDegree[];
   isActive?: boolean;
-  startDate?: Date;
-  endDate?: Date;
+  startDate?: Date | string;
+  endDate?: Date | string;
+
 }
 
 export interface IPaginatedTeacherResponse {

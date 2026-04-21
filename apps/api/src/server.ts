@@ -7,12 +7,10 @@ let server: any;
 
 async function startServer() {
   try {
-    console.log('📡 Connecting to databases...');
     await redis.connect();
     await database.connect();
 
     server = app.listen(env.port, () => {
-      console.log(`✅ Server running on port ${env.port}`);
       console.log(`🔗 Backend URL: http://localhost:${env.port}`);
     });
 

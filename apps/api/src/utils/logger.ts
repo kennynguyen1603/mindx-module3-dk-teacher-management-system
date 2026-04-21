@@ -5,9 +5,34 @@ class MyLogger {
   private logger: winston.Logger;
 
   constructor() {
-    // Định dạng log message
-    const formatPrint = winston.format.printf(
-      (info: winston.Logform.TransformableInfo) => {
+    // Định dạng log cho Console (Dễ nhìn cho Dev)
+    const consoleFormat = winston.format.combine(
+      winston.format.colorize(),
+      winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+      winston.format.printf((info) => {
+        const {
+          level,
+          message,
+          context = '',
+          requestId = '',
+          timestamp = '',
+          metadata = {},
+        } = info;
+
+        let metaStr = '';
+        const meta = metadata as Record<string, any>;
+        if (Object.keys(meta).length > 0) {
+          metaStr = `\n${JSON.stringify(meta, null, 2)}`;
+        }
+
+        return `[${timestamp}] ${level} [${context}] [${requestId}]: ${message}${metaStr}`;
+      }),
+    );
+
+    // Định dạng log cho File (Cấu trúc để máy đọc/grep)
+    const fileFormat = winston.format.combine(
+      winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+      winston.format.printf((info) => {
         const {
           level,
           message,
@@ -17,7 +42,7 @@ class MyLogger {
           metadata = {},
         } = info;
         return `${timestamp}::${level}::${context}::${requestId}::${message}::${JSON.stringify(metadata)}`;
-      },
+      }),
     );
 
     // Cấu hình chung cho DailyRotateFile
@@ -27,20 +52,17 @@ class MyLogger {
       zippedArchive: true,
       maxSize: '1m',
       maxFiles: '14d',
-      format: winston.format.combine(
-        winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-        formatPrint,
-      ),
+      format: fileFormat,
     };
 
     this.logger = winston.createLogger({
-      format: winston.format.combine(
-        winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-        formatPrint,
-      ),
       transports: [
-        new winston.transports.Console(),
+        // Console transport với format riêng
+        new winston.transports.Console({
+          format: consoleFormat,
+        }),
 
+        // File transports với format chung cho file
         new winston.transports.DailyRotateFile({
           ...commonRotateConfig,
           filename: 'application-%DATE%.info.log',
@@ -55,6 +77,7 @@ class MyLogger {
       ],
     });
   }
+
 
   /**
    * Log info message

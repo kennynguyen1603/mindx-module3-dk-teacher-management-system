@@ -1,6 +1,8 @@
 import { MongoClient, Db } from 'mongodb';
 import { env } from '@/config/env/env.js';
 
+
+
 class Database {
   private static instance: Database;
   private client: MongoClient;
@@ -34,15 +36,26 @@ class Database {
     this.db = this.client.db(env.mongo.dbName);
 
     console.log('✅ MongoDB connected');
+
+    // try {
+    //   await Promise.all([
+    //     createUserIndexes(),
+    //     createTeacherIndexes(),
+    //     createTeacherPositionIndexes(),
+    //     createTokenIndexes(),
+    //   ]);
+    // } catch (error) {
+    //   console.error('⚠️ Error creating indexes:', error);
+    // }
   }
 
   async disconnect(): Promise<void> {
     try {
       await this.client.close();
       console.log('Disconnected from the database');
-    } catch (error) {
-      console.error('Error disconnecting from the database:', error);
-      throw error;
+    } catch (_err) {
+      console.error('Error disconnecting from the database:', _err);
+      throw _err;
     }
   }
 

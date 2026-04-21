@@ -10,11 +10,11 @@ export interface IUserDocument {
   email: string;
   password?: string;
   avatar?: string;
-  role: UserRole;
-  status: UserStatus;
+  role: (typeof UserRole)[keyof typeof UserRole];
+  status: (typeof UserStatus)[keyof typeof UserStatus];
   isEmailVerified: boolean;
-  authProvider: AuthProvider;
-  providers: AuthProvider[];
+  authProvider: (typeof AuthProvider)[keyof typeof AuthProvider];
+  providers: (typeof AuthProvider)[keyof typeof AuthProvider][];
   phoneNumber?: string;
   address?: string;
   identity?: string;

@@ -12,15 +12,20 @@
 }
 
 @keyframes drawer-fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* ── Panel ── */
 .drawer-panel {
   font-family: 'Be Vietnam Pro', system-ui, sans-serif;
   width: min(740px, 92vw);
-  background: #fff;
+  background: var(--bg);
+  color: var(--text);
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -30,8 +35,12 @@
 }
 
 @keyframes drawer-slide {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
 /* ── Header ── */
@@ -40,7 +49,7 @@
   align-items: center;
   gap: 10px;
   padding: 14px 20px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
   flex-shrink: 0;
 }
 
@@ -48,24 +57,26 @@
   background: none;
   border: none;
   font-size: 20px;
-  color: #6b7280;
+  color: var(--text);
   cursor: pointer;
   padding: 2px 7px;
   border-radius: 4px;
   line-height: 1;
   font-weight: 300;
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
 }
 
 .drawer-close:hover {
-  background: #f3f4f6;
-  color: #111827;
+  background: var(--code-bg);
+  color: var(--accent);
 }
 
 .drawer-title {
   font-size: 14px;
   font-weight: 600;
-  color: #111827;
+  color: var(--text-h);
 }
 
 /* ── Scrollable body ── */
@@ -102,7 +113,7 @@
   justify-content: center;
   overflow: hidden;
   cursor: pointer;
-  border: 2px solid #e2e8f0;
+  border: 2px solid var(--border);
   transition: border-color 0.15s;
 }
 
@@ -127,13 +138,15 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1.5px dashed #d1d5db;
+  border: 1.5px dashed var(--border);
   border-radius: 6px;
   padding: 8px 10px;
   cursor: pointer;
   gap: 2px;
   width: 100%;
-  transition: border-color 0.15s, background 0.15s;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
   box-sizing: border-box;
 }
 
@@ -145,18 +158,18 @@
 .upload-btn svg {
   width: 16px;
   height: 16px;
-  color: #6b7280;
+  color: var(--text);
 }
 
 .upload-btn span {
   font-size: 10px;
-  color: #9ca3af;
+  color: var(--text);
 }
 
 .upload-btn strong {
   font-size: 11px;
   font-weight: 600;
-  color: #374151;
+  color: var(--text-h);
 }
 
 /* ── Section dividers ── */
@@ -172,13 +185,13 @@
   content: '';
   flex: 1;
   height: 1px;
-  background: #e5e7eb;
+  background: var(--border);
 }
 
 .section-divider span {
   font-size: 12px;
   font-weight: 600;
-  color: #374151;
+  color: var(--text-h);
   white-space: nowrap;
 }
 
@@ -199,7 +212,7 @@
   border: none;
   font-size: 13px;
   font-weight: 500;
-  color: #374151;
+  color: var(--text);
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 4px;
@@ -209,7 +222,7 @@
 }
 
 .btn-them:hover {
-  background: #f3f4f6;
+  background: var(--code-bg);
 }
 
 /* ── Form grid ── */
@@ -238,23 +251,25 @@
 .fg label {
   font-size: 12.5px;
   font-weight: 500;
-  color: #374151;
+  color: var(--text-h);
 }
 
 .fg input,
 .fg select,
 .fg textarea {
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 5px;
   padding: 8px 10px;
   font-size: 13px;
   font-family: inherit;
-  color: #1f2937;
+  color: var(--text-h);
   outline: none;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
   width: 100%;
   box-sizing: border-box;
-  background: #fff;
+  background: var(--bg);
 }
 
 .fg input:focus,
@@ -266,7 +281,7 @@
 
 .fg input::placeholder,
 .fg textarea::placeholder {
-  color: #9ca3af;
+  color: var(--text);
 }
 
 .fg input.err,
@@ -298,14 +313,14 @@
   transform: translateY(-50%);
   width: 12px;
   height: 12px;
-  color: #6b7280;
+  color: var(--text);
   pointer-events: none;
 }
 
 /* ── Degree form ── */
 .degree-form {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
   border-radius: 6px;
   padding: 14px;
   margin-bottom: 14px;
@@ -320,18 +335,18 @@
 
 .btn-cancel-sm {
   padding: 6px 14px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 5px;
-  background: #fff;
+  background: var(--bg);
   font-size: 12.5px;
   font-family: inherit;
   cursor: pointer;
-  color: #374151;
+  color: var(--text);
   transition: background 0.15s;
 }
 
 .btn-cancel-sm:hover {
-  background: #f3f4f6;
+  background: var(--code-bg);
 }
 
 .btn-add-degree {
@@ -356,31 +371,31 @@
   width: 100%;
   border-collapse: collapse;
   font-size: 12.5px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 6px;
   overflow: hidden;
 }
 
 .degree-table th {
-  background: #f3f4f6;
+  background: var(--code-bg);
   padding: 9px 12px;
   text-align: left;
   font-weight: 600;
-  color: #374151;
+  color: var(--text-h);
   font-size: 12px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .degree-table td {
   padding: 9px 12px;
-  border-top: 1px solid #f3f4f6;
-  color: #374151;
+  border-top: 1px solid var(--border);
+  color: var(--text);
 }
 
 .degree-empty {
   text-align: center;
   padding: 28px 12px;
-  color: #9ca3af;
+  color: var(--text);
 }
 
 .degree-empty svg {
@@ -417,7 +432,7 @@
   justify-content: flex-end;
   padding: 16px 0 4px;
   margin-top: 8px;
-  border-top: 1px solid #f3f4f6;
+  border-top: 1px solid var(--border);
 }
 
 .btn-save {
@@ -425,13 +440,13 @@
   align-items: center;
   gap: 7px;
   padding: 8px 20px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 6px;
-  background: #fff;
+  background: var(--bg);
   font-size: 13px;
   font-weight: 500;
   font-family: inherit;
-  color: #374151;
+  color: var(--text);
   cursor: pointer;
   transition: all 0.15s;
 }
@@ -442,8 +457,8 @@
 }
 
 .btn-save:hover {
-  background: #f9fafb;
-  border-color: #9ca3af;
+  background: var(--code-bg);
+  border-color: var(--accent);
 }
 
 .btn-save:disabled {
@@ -459,4 +474,12 @@
   border-radius: 5px;
   font-size: 13px;
   margin-bottom: 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .form-error-banner {
+    background: #7f1d1d;
+    border-color: #7f1d1d;
+    color: #fca5a5;
+  }
 }

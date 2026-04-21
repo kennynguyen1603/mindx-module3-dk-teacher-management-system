@@ -55,7 +55,9 @@ const PositionDrawer: React.FC<DrawerProps> = ({
       if (mode === 'create') await onCreate(form);
       else if (position) await onUpdate(position._id, form);
       onSuccess();
-    } catch {}
+    } catch (err) {
+      console.error('Submit error:', err);
+    }
   };
 
   return (
@@ -158,7 +160,8 @@ const PositionDrawer: React.FC<DrawerProps> = ({
 
 export const TeacherPositions = () => {
   const [showForm, setShowForm] = useState(false);
-  const [editingPosition, setEditingPosition] = useState<ITeacherPosition | null>(null);
+  const [editingPosition, setEditingPosition] =
+    useState<ITeacherPosition | null>(null);
   const [formMode, setFormMode] = useState<'create' | 'edit'>('create');
 
   const { positions, loading, error, refetch } = useTeacherPositions({});
@@ -266,7 +269,13 @@ export const TeacherPositions = () => {
                           stroke="currentColor"
                           strokeWidth="1.5"
                         />
-                        <circle cx="10" cy="10" r="2.25" stroke="currentColor" strokeWidth="1.5" />
+                        <circle
+                          cx="10"
+                          cy="10"
+                          r="2.25"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                        />
                       </svg>
                     </button>
                   </td>

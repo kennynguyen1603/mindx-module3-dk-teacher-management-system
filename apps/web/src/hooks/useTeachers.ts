@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../axios.js';
-import type { ITeacher } from '@mern/shared';
+import type { ITeacher, ICreateTeacherRequest, IUpdateTeacherRequest } from '@mern/shared';
+
 
 interface UseTeachersParams {
   page?: number;
@@ -20,16 +21,7 @@ export const useTeachers = (params: UseTeachersParams = {}) => {
     setError(null);
 
     try {
-      const queryParams = new URLSearchParams();
-      if (params.page) queryParams.append('page', params.page.toString());
-      if (params.limit) queryParams.append('limit', params.limit.toString());
-      if (params.search) queryParams.append('search', params.search);
-      if (params.isActive !== undefined)
-        queryParams.append('isActive', params.isActive.toString());
-
-      const response = await api.get(
-        `/api/v1/teachers?${queryParams.toString()}`,
-      );
+      const response = await api.get('/teachers', { params });
       setTeachers(response.data.data.teachers);
       setTotal(response.data.data.pagination.total);
     } catch (err: any) {
@@ -48,6 +40,7 @@ export const useTeachers = (params: UseTeachersParams = {}) => {
   return { teachers, total, loading, error, refetch: fetchTeachers };
 };
 
+
 export const useTeacherById = (id: string | null) => {
   const [teacher, setTeacher] = useState<ITeacher | null>(null);
   const [loading, setLoading] = useState(false);
@@ -61,7 +54,7 @@ export const useTeacherById = (id: string | null) => {
       setError(null);
 
       try {
-        const response = await api.get(`/api/v1/teachers/${id}`);
+        const response = await api.get(`/teachers/${id}`);
         setTeacher(response.data.data.teacher);
       } catch (err: any) {
         setError(
@@ -82,12 +75,13 @@ export const useCreateTeacher = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const create = async (data: any) => {
+  const create = async (data: ICreateTeacherRequest) => {
+
     setLoading(true);
     setError(null);
 
     try {
-      const response = await api.post('/api/v1/teachers', data);
+      const response = await api.post('/teachers', data);
       return response.data.data.teacher;
     } catch (err: any) {
       const errorMsg =
@@ -106,12 +100,13 @@ export const useUpdateTeacher = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const update = async (id: string, data: any) => {
+  const update = async (id: string, data: IUpdateTeacherRequest) => {
+
     setLoading(true);
     setError(null);
 
     try {
-      const response = await api.patch(`/api/v1/teachers/${id}`, data);
+      const response = await api.patch(`/teachers/${id}`, data);
       return response.data.data.teacher;
     } catch (err: any) {
       const errorMsg =
@@ -135,7 +130,7 @@ export const useDeleteTeacher = () => {
     setError(null);
 
     try {
-      await api.delete(`/api/v1/teachers/${id}`);
+      await api.delete(`/teachers/${id}`);
       return true;
     } catch (err: any) {
       const errorMsg =

@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import type { ITeacher } from '@mern/shared';
+import type { ITeacher, IDegree } from '@mern/shared';
 import { useTeachers } from '../hooks/useTeachers.js';
 import { TeacherFormModal } from '../components/TeacherFormModal.js';
+import { DEGREE_ORDER } from '../utils/constants.js';
+import { getInitials } from '../utils/formatters.js';
 import './Teachers.css';
 
-const DEGREE_ORDER = ['Tiến sĩ', 'Thạc sĩ', 'Cử nhân', 'Cao đẳng', 'Trung cấp'];
-
-const getHighestDegree = (degrees: any[]) => {
+const getHighestDegree = (degrees: IDegree[]) => {
   if (!degrees?.length) return null;
   return [...degrees].sort((a, b) => {
     const ai = DEGREE_ORDER.indexOf(a.type);
@@ -17,9 +17,10 @@ const getHighestDegree = (degrees: any[]) => {
 
 const getPositionName = (pos: any): string | null => {
   if (!pos) return null;
-  if (typeof pos === 'object' && pos.name) return pos.name;
+  if (typeof pos === 'object' && pos.name) return pos.name as string;
   return null;
 };
+
 
 export const Teachers = () => {
   const [page, setPage] = useState(1);
@@ -149,7 +150,7 @@ export const Teachers = () => {
                     <td className="td-teacher">
                       <div className="teacher-cell">
                         <div className="t-avatar">
-                          <span>{t.name?.[0] || '?'}</span>
+                          <span>{getInitials(t.name)}</span>
                         </div>
                         <div className="t-info">
                           <strong>{t.name}</strong>

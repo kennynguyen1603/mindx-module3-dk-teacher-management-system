@@ -26,7 +26,7 @@ export const useTeacherPositions = (params: UsePositionsParams = {}) => {
         queryParams.append('isActive', params.isActive.toString());
 
       const response = await api.get(
-        `/api/v1/teacher-positions?${queryParams.toString()}`,
+        `/teacher-positions?${queryParams.toString()}`,
       );
       setPositions(response.data.data.positions);
       setTotal(response.data.data.pagination.total);
@@ -57,7 +57,7 @@ export const useActivePositions = () => {
       setError(null);
 
       try {
-        const response = await api.get('/api/v1/teacher-positions/active');
+        const response = await api.get('/teacher-positions/active');
         setPositions(response.data.data.positions);
       } catch (err: any) {
         setError(
@@ -84,7 +84,7 @@ export const useCreatePosition = () => {
     setError(null);
 
     try {
-      const response = await api.post('/api/v1/teacher-positions', data);
+      const response = await api.post('/teacher-positions', data);
       return response.data.data.position;
     } catch (err: any) {
       const errorMsg =
@@ -108,7 +108,7 @@ export const useUpdatePosition = () => {
     setError(null);
 
     try {
-      const response = await api.patch(`/api/v1/teacher-positions/${id}`, data);
+      const response = await api.patch(`/teacher-positions/${id}`, data);
       return response.data.data.position;
     } catch (err: any) {
       const errorMsg =
@@ -132,7 +132,7 @@ export const useDeletePosition = () => {
     setError(null);
 
     try {
-      await api.delete(`/api/v1/teacher-positions/${id}`);
+      await api.delete(`/teacher-positions/${id}`);
       return true;
     } catch (err: any) {
       const errorMsg =

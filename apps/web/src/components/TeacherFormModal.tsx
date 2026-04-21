@@ -1,7 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import type { ITeacher, IDegree } from '@mern/shared';
+
 import { useCreateTeacher, useUpdateTeacher } from '../hooks/useTeachers.js';
 import { useActivePositions } from '../hooks/useTeacherPositions.js';
+import { TeacherDegreeTable } from './TeacherDegreeTable.js';
+import { TeacherDegreeForm } from './TeacherDegreeForm.js';
+import { toHtmlDate, getInitials } from '../utils/formatters.js';
 import './TeacherFormModal.css';
 
 interface Props {
@@ -11,9 +15,7 @@ interface Props {
   onSuccess: () => void;
 }
 
-const DEGREE_TYPES = ['Tiến sĩ', 'Thạc sĩ', 'Cử nhân', 'Cao đẳng', 'Trung cấp'];
-
-const emptyDegree = () => ({
+const emptyDegree = (): IDegree => ({
   type: 'Cử nhân',
   school: '',
   major: '',
@@ -21,7 +23,12 @@ const emptyDegree = () => ({
   isGraduated: true,
 });
 
-export const TeacherFormModal: React.FC<Props> = ({ teacher, mode, onClose, onSuccess }) => {
+export const TeacherFormModal: React.FC<Props> = ({
+  teacher,
+  mode,
+  onClose,
+  onSuccess,
+}) => {
   const { create, loading: creating, error: createError } = useCreateTeacher();
   const { update, loading: updating, error: updateError } = useUpdateTeacher();
   const { positions, loading: loadingPositions } = useActivePositions();
@@ -53,20 +60,15 @@ export const TeacherFormModal: React.FC<Props> = ({ teacher, mode, onClose, onSu
         phoneNumber: teacher.phoneNumber,
         address: teacher.address,
         identity: teacher.identity,
-        dob: teacher.createdAt
-          ? new Date(teacher.createdAt).toISOString().split('T')[0]
-          : '',
-        positions: teacher.positions.map((p: any) =>
+        dob: toHtmlDate(teacher.dob),
+        positions: (teacher.positions || []).map((p: string | { _id: string }) =>
           typeof p === 'string' ? p : p._id,
         ),
+
         degrees: teacher.degrees || [],
         isActive: teacher.isActive,
-        startDate: teacher.startDate
-          ? new Date(teacher.startDate).toISOString().split('T')[0]
-          : '',
-        endDate: teacher.endDate
-          ? new Date(teacher.endDate).toISOString().split('T')[0]
-          : '',
+        startDate: toHtmlDate(teacher.startDate),
+        endDate: toHtmlDate(teacher.endDate),
       });
     }
   }, [teacher, mode]);
@@ -93,15 +95,31 @@ export const TeacherFormModal: React.FC<Props> = ({ teacher, mode, onClose, onSu
     try {
       const payload = {
         ...form,
-        dob: new Date(form.dob),
-        startDate: new Date(form.startDate),
-        endDate: form.endDate ? new Date(form.endDate) : undefined,
+        // Send date strings directly to let backend handle coercion
+        dob: form.dob,
+        startDate: form.startDate,
+        endDate: form.endDate || undefined,
       };
-      if (mode === 'create') await create(payload);
-      else if (teacher) await update(teacher._id, payload);
+
+      if (mode === 'create') {
+        await create(payload);
+      } else if (teacher) {
+        await update(teacher._id, payload);
+      }
       onSuccess();
-    } catch {}
+    } catch (error: any) {
+      console.error('Submit error:', error);
+      if (error.response?.data?.error?.details) {
+        const backendErrors: Record<string, string> = {};
+        error.response.data.error.details.forEach((d: { field: string; message: string }) => {
+          backendErrors[d.field || 'unknown'] = d.message;
+        });
+        setErrors((prev) => ({ ...prev, ...backendErrors }));
+      }
+    }
   };
+
+
 
   const addDegree = () => {
     if (!degreeForm.school.trim() || !degreeForm.major.trim()) return;
@@ -131,13 +149,14 @@ export const TeacherFormModal: React.FC<Props> = ({ teacher, mode, onClose, onSu
   return (
     <div className="drawer-overlay" onClick={onClose}>
       <div className="drawer-panel" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
         <div className="drawer-header">
           <button className="drawer-close" onClick={onClose}>
             ×
           </button>
           <span className="drawer-title">
-            {mode === 'create' ? 'Tạo thông tin giáo viên' : 'Cập nhật giáo viên'}
+            {mode === 'create'
+              ? 'Tạo thông tin giáo viên'
+              : 'Cập nhật giáo viên'}
           </span>
         </div>
 
@@ -147,16 +166,22 @@ export const TeacherFormModal: React.FC<Props> = ({ teacher, mode, onClose, onSu
           {/* Avatar + Personal Info */}
           <div className="section-avatar-row">
             <div className="avatar-col">
-              <div className="avatar-preview" onClick={() => fileRef.current?.click()}>
+              <div
+                className="avatar-preview"
+                onClick={() => fileRef.current?.click()}
+              >
                 {avatarPreview ? (
                   <img src={avatarPreview} alt="Avatar" />
                 ) : (
                   <div className="avatar-placeholder-lg">
-                    {form.name?.[0]?.toUpperCase() || '?'}
+                    {getInitials(form.name)}
                   </div>
                 )}
               </div>
-              <div className="upload-btn" onClick={() => fileRef.current?.click()}>
+              <div
+                className="upload-btn"
+                onClick={() => fileRef.current?.click()}
+              >
                 <svg viewBox="0 0 20 20" fill="none">
                   <path
                     d="M10 13V4M10 4l-3 3M10 4l3 3"
@@ -198,7 +223,9 @@ export const TeacherFormModal: React.FC<Props> = ({ teacher, mode, onClose, onSu
                     onChange={(e) => setField('name', e.target.value)}
                     className={errors.name ? 'err' : ''}
                   />
-                  {errors.name && <span className="err-msg">{errors.name}</span>}
+                  {errors.name && (
+                    <span className="err-msg">{errors.name}</span>
+                  )}
                 </div>
                 <div className="fg">
                   <label>* Ngày sinh</label>
@@ -207,7 +234,6 @@ export const TeacherFormModal: React.FC<Props> = ({ teacher, mode, onClose, onSu
                     value={form.dob}
                     onChange={(e) => setField('dob', e.target.value)}
                     className={errors.dob ? 'err' : ''}
-                    placeholder="Chọn ngày sinh"
                   />
                   {errors.dob && <span className="err-msg">{errors.dob}</span>}
                 </div>
@@ -232,7 +258,9 @@ export const TeacherFormModal: React.FC<Props> = ({ teacher, mode, onClose, onSu
                     onChange={(e) => setField('email', e.target.value)}
                     className={errors.email ? 'err' : ''}
                   />
-                  {errors.email && <span className="err-msg">{errors.email}</span>}
+                  {errors.email && (
+                    <span className="err-msg">{errors.email}</span>
+                  )}
                 </div>
                 <div className="fg">
                   <label>* Số CCCD</label>
@@ -267,33 +295,50 @@ export const TeacherFormModal: React.FC<Props> = ({ teacher, mode, onClose, onSu
             <div className="section-divider">
               <span>Thông tin công tác</span>
             </div>
-            <div className="fg">
-              <label>* Vị trí công tác</label>
-              <div className="position-select-wrap">
-                <select
-                  className="position-select"
-                  disabled={loadingPositions}
-                  value={form.positions[0] || ''}
-                  onChange={(e) =>
-                    setField('positions', e.target.value ? [e.target.value] : [])
-                  }
-                >
-                  <option value="">Chọn các vị trí công tác</option>
-                  {positions.map((p) => (
-                    <option key={p._id} value={p._id}>
-                      {p.name}
-                    </option>
-                  ))}
-                </select>
-                <svg className="select-caret" viewBox="0 0 12 12" fill="none">
-                  <path
-                    d="M2 4l4 4 4-4"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+            <div className="form-grid-2">
+              <div className="fg">
+                <label>* Vị trí công tác</label>
+                <div className="position-select-wrap">
+                  <select
+                    className="position-select"
+                    disabled={loadingPositions}
+                    value={form.positions[0] || ''}
+                    onChange={(e) =>
+                      setField(
+                        'positions',
+                        e.target.value ? [e.target.value] : [],
+                      )
+                    }
+                  >
+                    <option value="">Chọn các vị trí công tác</option>
+                    {positions.map((p) => (
+                      <option key={p._id} value={p._id}>
+                        {p.name}
+                      </option>
+                    ))}
+                  </select>
+                  <svg className="select-caret" viewBox="0 0 12 12" fill="none">
+                    <path
+                      d="M2 4l4 4 4-4"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div className="fg">
+                <label>* Ngày bắt đầu</label>
+                <input
+                  type="date"
+                  value={form.startDate}
+                  onChange={(e) => setField('startDate', e.target.value)}
+                  className={errors.startDate ? 'err' : ''}
+                />
+                {errors.startDate && (
+                  <span className="err-msg">{errors.startDate}</span>
+                )}
               </div>
             </div>
           </div>
@@ -314,148 +359,21 @@ export const TeacherFormModal: React.FC<Props> = ({ teacher, mode, onClose, onSu
             </div>
 
             {showDegreeForm && (
-              <div className="degree-form">
-                <div className="form-grid-3">
-                  <div className="fg">
-                    <label>Bậc</label>
-                    <select
-                      value={degreeForm.type}
-                      onChange={(e) =>
-                        setDegreeForm((d) => ({ ...d, type: e.target.value }))
-                      }
-                    >
-                      {DEGREE_TYPES.map((t) => (
-                        <option key={t} value={t}>
-                          {t}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="fg">
-                    <label>Trường</label>
-                    <input
-                      value={degreeForm.school}
-                      placeholder="Tên trường"
-                      onChange={(e) =>
-                        setDegreeForm((d) => ({ ...d, school: e.target.value }))
-                      }
-                    />
-                  </div>
-                  <div className="fg">
-                    <label>Chuyên ngành</label>
-                    <input
-                      value={degreeForm.major}
-                      placeholder="Ngành học"
-                      onChange={(e) =>
-                        setDegreeForm((d) => ({ ...d, major: e.target.value }))
-                      }
-                    />
-                  </div>
-                  <div className="fg">
-                    <label>Năm tốt nghiệp</label>
-                    <input
-                      type="number"
-                      value={degreeForm.year}
-                      onChange={(e) =>
-                        setDegreeForm((d) => ({
-                          ...d,
-                          year: parseInt(e.target.value) || 0,
-                        }))
-                      }
-                    />
-                  </div>
-                  <div className="fg">
-                    <label>Trạng thái</label>
-                    <select
-                      value={degreeForm.isGraduated ? '1' : '0'}
-                      onChange={(e) =>
-                        setDegreeForm((d) => ({
-                          ...d,
-                          isGraduated: e.target.value === '1',
-                        }))
-                      }
-                    >
-                      <option value="1">Đã tốt nghiệp</option>
-                      <option value="0">Đang học</option>
-                    </select>
-                  </div>
-                </div>
-                <div className="degree-form-actions">
-                  <button
-                    type="button"
-                    className="btn-cancel-sm"
-                    onClick={() => {
-                      setShowDegreeForm(false);
-                      setDegreeForm(emptyDegree());
-                    }}
-                  >
-                    Hủy
-                  </button>
-                  <button type="button" className="btn-add-degree" onClick={addDegree}>
-                    + Thêm
-                  </button>
-                </div>
-              </div>
+              <TeacherDegreeForm
+                degree={degreeForm}
+                onChange={(data) => setDegreeForm((d) => ({ ...d, ...data }))}
+                onAdd={addDegree}
+                onCancel={() => {
+                  setShowDegreeForm(false);
+                  setDegreeForm(emptyDegree());
+                }}
+              />
             )}
 
-            <table className="degree-table">
-              <thead>
-                <tr>
-                  <th>Bậc</th>
-                  <th>Trường</th>
-                  <th>Chuyên ngành</th>
-                  <th>Trạng thái</th>
-                  <th>Tốt nghiệp</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {form.degrees.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="degree-empty">
-                      <svg viewBox="0 0 48 48" fill="none">
-                        <rect
-                          x="6"
-                          y="10"
-                          width="36"
-                          height="28"
-                          rx="2"
-                          stroke="#d1d5db"
-                          strokeWidth="2"
-                        />
-                        <path d="M6 18h36" stroke="#d1d5db" strokeWidth="2" />
-                        <path
-                          d="M14 14h4M30 14h4"
-                          stroke="#d1d5db"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                        />
-                      </svg>
-                      <span>Trống</span>
-                    </td>
-                  </tr>
-                ) : (
-                  form.degrees.map((deg, i) => (
-                    <tr key={i}>
-                      <td>{deg.type}</td>
-                      <td>{deg.school}</td>
-                      <td>{deg.major}</td>
-                      <td>{deg.isGraduated ? 'Đã tốt nghiệp' : 'Đang học'}</td>
-                      <td>{deg.year}</td>
-                      <td>
-                        <button
-                          type="button"
-                          className="btn-remove-deg"
-                          onClick={() => removeDegree(i)}
-                        >
-                          ×
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+            <TeacherDegreeTable
+              degrees={form.degrees}
+              onRemove={removeDegree}
+            />
           </div>
 
           <div className="drawer-footer">
@@ -491,3 +409,4 @@ export const TeacherFormModal: React.FC<Props> = ({ teacher, mode, onClose, onSu
     </div>
   );
 };
+

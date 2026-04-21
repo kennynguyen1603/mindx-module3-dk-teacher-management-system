@@ -1,8 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap');
 
 .t-page {
-  font-family: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
-  background: #fff;
+  font-family:
+    'Be Vietnam Pro',
+    system-ui,
+    -apple-system,
+    sans-serif;
+  background: var(--bg);
+  color: var(--text);
   min-height: 100%;
 }
 
@@ -13,17 +18,18 @@
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
 }
 
 .t-search-box {
   display: flex;
   align-items: center;
   gap: 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 6px;
   padding: 6px 12px;
-  background: #fff;
+  background: var(--bg);
   cursor: text;
   margin-right: auto;
   transition: border-color 0.15s;
@@ -45,7 +51,7 @@
   border: none;
   outline: none;
   font-size: 13px;
-  color: #334155;
+  color: var(--text-h);
   font-family: inherit;
   width: 180px;
   background: transparent;
@@ -60,15 +66,17 @@
   align-items: center;
   gap: 6px;
   padding: 6px 13px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 6px;
-  background: #fff;
+  background: var(--bg);
   font-size: 13px;
   font-family: inherit;
-  color: #475569;
+  color: var(--text);
   cursor: pointer;
   font-weight: 500;
-  transition: background 0.15s, border-color 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
 }
 
 .t-btn-ghost svg {
@@ -77,8 +85,8 @@
 }
 
 .t-btn-ghost:hover {
-  background: #f8fafc;
-  border-color: #cbd5e1;
+  background: var(--accent-bg);
+  border-color: var(--accent);
 }
 
 .t-btn-primary {
@@ -114,6 +122,14 @@
   border-bottom: 1px solid #fee2e2;
 }
 
+@media (prefers-color-scheme: dark) {
+  .t-error {
+    background: #7f1d1d;
+    color: #fca5a5;
+    border-bottom-color: #7f1d1d;
+  }
+}
+
 /* ── Table ── */
 .t-table-wrap {
   overflow-x: auto;
@@ -126,18 +142,18 @@
 }
 
 .t-table thead {
-  background: #f8fafc;
+  background: var(--code-bg);
 }
 
 .t-table th {
   padding: 10px 14px;
   text-align: left;
   font-weight: 600;
-  color: #374151;
+  color: var(--text-h);
   font-size: 12.5px;
   white-space: nowrap;
-  border-bottom: 1px solid #e2e8f0;
-  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border);
+  border-top: 1px solid var(--border);
 }
 
 .th-info {
@@ -148,13 +164,13 @@
 
 .t-table td {
   padding: 12px 14px;
-  border-bottom: 1px solid #f1f5f9;
-  color: #374151;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
   vertical-align: middle;
 }
 
 .t-table tbody tr:hover {
-  background: #fafafa;
+  background: var(--code-bg);
 }
 
 .td-code {
@@ -202,7 +218,6 @@
 
 .t-info strong {
   font-weight: 600;
-  color: #1e293b;
   font-size: 13px;
 }
 
@@ -263,7 +278,9 @@
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 4px;
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
   white-space: nowrap;
 }
 

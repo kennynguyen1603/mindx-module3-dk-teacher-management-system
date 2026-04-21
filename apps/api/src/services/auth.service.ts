@@ -31,7 +31,9 @@ import {
   createVerificationTokenDoc,
 } from '@/models/token.model.js';
 
-const assertAccountAllowed = (status: UserStatus) => {
+const assertAccountAllowed = (
+  status: (typeof UserStatus)[keyof typeof UserStatus],
+) => {
   if (status === UserStatus.INACTIVE) {
     throw new UnauthorizedError(RESPONSE_MESSAGES.AUTH.ACCOUNT_INACTIVE);
   }

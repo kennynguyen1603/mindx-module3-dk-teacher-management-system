@@ -12,11 +12,21 @@ type AppPage = 'teachers' | 'positions';
 type AuthPage = 'login' | 'register';
 
 const AppContent: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user, loading, logout } = useAuth();
   const [currentPage, setCurrentPage] = useState<AuthPage>('login');
   const [activePage, setActivePage] = useState<AppPage>('teachers');
 
+  if (loading) {
+    return (
+      <div className="loading-screen">
+        <div className="spinner"></div>
+        <p>Đang tải...</p>
+      </div>
+    );
+  }
+
   if (!user) {
+
     return currentPage === 'login' ? (
       <LoginPage
         onSuccess={() => {}}

@@ -19,6 +19,12 @@ import { wrapAsyncHandler } from '@/utils/asyncHandler.js';
 
 const authRouter: Router = Router();
 
+authRouter.get(
+  '/me',
+  requireAuth,
+  wrapAsyncHandler(authController.me),
+);
+
 authRouter.post(
   '/register',
   rateLimitMiddleware(5, 60),

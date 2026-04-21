@@ -20,30 +20,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check if the user is authenticated on mount
     const fetchUser = async () => {
       try {
         setLoading(true);
-        // Check if there's a token in localStorage/cookies
-        // If not, skip the profile check
-        const token =
-          localStorage.getItem('accessToken') ||
-          sessionStorage.getItem('accessToken');
-        if (!token) {
-          setUser(null);
-          setError(null);
-          setLoading(false);
-          return;
+        // Attempt to fetch current user profile using the accessToken cookie
+        const response = await api.get('/auth/me');
+        if (response.data.data.user) {
+          setUser(response.data.data.user);
         }
-
-        // Optional: If there's a token, we could validate it by calling an endpoint
-        // For now, we just mark loading as complete since the backend handles token validation
-        setUser(null);
-        setError(null);
       } catch (err) {
-        console.log('error =>', err);
+        // If 401, the axios interceptor already tried refreshing. 
+        // If it still fails, user is just not logged in.
+        console.log('Session restoration failed:', err);
         setUser(null);
-        setError(null); // Silent fail on profile check
       } finally {
         setLoading(false);
       }
@@ -51,6 +40,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
     fetchUser();
   }, []);
+
 
   const login = async (email: string, password: string) => {
     try {

@@ -1,6 +1,8 @@
 import { Request, Response, CookieOptions } from 'express';
 import { OkResponse, CreatedResponse } from '@/core/success.response.js';
 import { authService, GoogleCallbackResult } from '@/services/auth.service.js';
+import { userService } from '@/services/user.service.js';
+
 import { getSecurityContext } from '@/utils/security.utils.js';
 import { RESPONSE_MESSAGES } from '@/utils/constants.js';
 import { UnauthorizedError } from '@/core/error.response.js';
@@ -48,7 +50,13 @@ const extractRefreshToken = (req: Request): string => {
 };
 
 class AuthController {
+  me = async (req: Request, res: Response) => {
+    const user = await userService.getProfile(req.user!.userId);
+    return new OkResponse({ data: { user } });
+  };
+
   register = async (req: Request, res: Response) => {
+
     const { name, email, password } = req.validated?.body ?? req.body;
     const user = await authService.register({ name, email, password });
     return new CreatedResponse({

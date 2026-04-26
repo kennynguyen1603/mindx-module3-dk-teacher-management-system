@@ -150,7 +150,11 @@ export const Teachers = () => {
                     <td className="td-teacher">
                       <div className="teacher-cell">
                         <div className="t-avatar">
-                          <span>{getInitials(t.name)}</span>
+                          {t.avatar ? (
+                            <img src={t.avatar} alt={t.name} />
+                          ) : (
+                            <span>{getInitials(t.name)}</span>
+                          )}
                         </div>
                         <div className="t-info">
                           <strong>{t.name}</strong>

@@ -76,7 +76,6 @@ export const useCreateTeacher = () => {
   const [error, setError] = useState<string | null>(null);
 
   const create = async (data: ICreateTeacherRequest) => {
-
     setLoading(true);
     setError(null);
 
@@ -87,7 +86,7 @@ export const useCreateTeacher = () => {
       const errorMsg =
         err.response?.data?.error?.message || 'Failed to create teacher';
       setError(errorMsg);
-      throw new Error(errorMsg);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -101,7 +100,6 @@ export const useUpdateTeacher = () => {
   const [error, setError] = useState<string | null>(null);
 
   const update = async (id: string, data: IUpdateTeacherRequest) => {
-
     setLoading(true);
     setError(null);
 
@@ -112,7 +110,7 @@ export const useUpdateTeacher = () => {
       const errorMsg =
         err.response?.data?.error?.message || 'Failed to update teacher';
       setError(errorMsg);
-      throw new Error(errorMsg);
+      throw err;
     } finally {
       setLoading(false);
     }

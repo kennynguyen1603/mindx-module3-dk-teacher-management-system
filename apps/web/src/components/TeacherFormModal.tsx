@@ -6,6 +6,7 @@ import { useActivePositions } from '../hooks/useTeacherPositions.js';
 import { TeacherDegreeTable } from './TeacherDegreeTable.js';
 import { TeacherDegreeForm } from './TeacherDegreeForm.js';
 import { toHtmlDate, getInitials } from '../utils/formatters.js';
+import api from '../axios.js';
 import './TeacherFormModal.css';
 
 interface Props {
@@ -22,6 +23,10 @@ const emptyDegree = (): IDegree => ({
   year: new Date().getFullYear(),
   isGraduated: true,
 });
+
+const PHONE_RE = /^[0-9]{10,11}$/;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const IDENTITY_RE = /^[0-9]{9,12}$/;
 
 export const TeacherFormModal: React.FC<Props> = ({
   teacher,
@@ -50,6 +55,8 @@ export const TeacherFormModal: React.FC<Props> = ({
   const [showDegreeForm, setShowDegreeForm] = useState(false);
   const [degreeForm, setDegreeForm] = useState(emptyDegree());
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -64,27 +71,45 @@ export const TeacherFormModal: React.FC<Props> = ({
         positions: (teacher.positions || []).map((p: string | { _id: string }) =>
           typeof p === 'string' ? p : p._id,
         ),
-
         degrees: teacher.degrees || [],
         isActive: teacher.isActive,
         startDate: toHtmlDate(teacher.startDate),
         endDate: toHtmlDate(teacher.endDate),
       });
+      if (teacher.avatar) {
+        setAvatarPreview(teacher.avatar);
+      }
     }
   }, [teacher, mode]);
 
-  const setField = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) =>
+  const setField = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) => {
     setForm((f) => ({ ...f, [k]: v }));
+    if (errors[k]) setErrors((e) => { const n = { ...e }; delete n[k]; return n; });
+  };
 
   const validate = () => {
     const e: Record<string, string> = {};
+
     if (!form.name.trim()) e.name = 'Bắt buộc';
+    else if (form.name.trim().length < 2) e.name = 'Ít nhất 2 ký tự';
+
     if (!form.email.trim()) e.email = 'Bắt buộc';
+    else if (!EMAIL_RE.test(form.email.trim())) e.email = 'Email không hợp lệ';
+
     if (!form.phoneNumber.trim()) e.phoneNumber = 'Bắt buộc';
+    else if (!PHONE_RE.test(form.phoneNumber.trim()))
+      e.phoneNumber = 'Phải có 10–11 chữ số';
+
     if (!form.address.trim()) e.address = 'Bắt buộc';
+    else if (form.address.trim().length < 5) e.address = 'Ít nhất 5 ký tự';
+
     if (!form.identity.trim()) e.identity = 'Bắt buộc';
+    else if (!IDENTITY_RE.test(form.identity.trim()))
+      e.identity = 'CCCD phải có 9–12 chữ số';
+
     if (!form.dob) e.dob = 'Bắt buộc';
     if (!form.startDate) e.startDate = 'Bắt buộc';
+
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -92,13 +117,26 @@ export const TeacherFormModal: React.FC<Props> = ({
   const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validate()) return;
+
+    setUploadError(null);
+
     try {
+      let avatarUrl: string | undefined =
+        mode === 'edit' && teacher?.avatar ? teacher.avatar : undefined;
+
+      if (avatarFile) {
+        const formData = new FormData();
+        formData.append('avatar', avatarFile);
+        const uploadRes = await api.post('/teachers/upload-avatar', formData);
+        avatarUrl = uploadRes.data.data.url;
+      }
+
       const payload = {
         ...form,
-        // Send date strings directly to let backend handle coercion
         dob: form.dob,
         startDate: form.startDate,
         endDate: form.endDate || undefined,
+        avatar: avatarUrl,
       };
 
       if (mode === 'create') {
@@ -108,18 +146,19 @@ export const TeacherFormModal: React.FC<Props> = ({
       }
       onSuccess();
     } catch (error: any) {
-      console.error('Submit error:', error);
       if (error.response?.data?.error?.details) {
         const backendErrors: Record<string, string> = {};
-        error.response.data.error.details.forEach((d: { field: string; message: string }) => {
-          backendErrors[d.field || 'unknown'] = d.message;
-        });
+        error.response.data.error.details.forEach(
+          (d: { field: string; message: string }) => {
+            backendErrors[d.field || 'unknown'] = d.message;
+          },
+        );
         setErrors((prev) => ({ ...prev, ...backendErrors }));
+      } else if (error.message?.includes('upload') || error.message?.includes('Cloudinary')) {
+        setUploadError('Upload ảnh thất bại, vui lòng thử lại');
       }
     }
   };
-
-
 
   const addDegree = () => {
     if (!degreeForm.school.trim() || !degreeForm.major.trim()) return;
@@ -137,6 +176,8 @@ export const TeacherFormModal: React.FC<Props> = ({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setAvatarFile(file);
+      setUploadError(null);
       const reader = new FileReader();
       reader.onload = (ev) => setAvatarPreview(ev.target?.result as string);
       reader.readAsDataURL(file);
@@ -162,6 +203,7 @@ export const TeacherFormModal: React.FC<Props> = ({
 
         <form className="drawer-body" onSubmit={handleSubmit}>
           {formError && <div className="form-error-banner">{formError}</div>}
+          {uploadError && <div className="form-error-banner">{uploadError}</div>}
 
           {/* Avatar + Personal Info */}
           <div className="section-avatar-row">
@@ -409,4 +451,3 @@ export const TeacherFormModal: React.FC<Props> = ({
     </div>
   );
 };
-

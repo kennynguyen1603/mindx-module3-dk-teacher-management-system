@@ -131,9 +131,8 @@ export interface ITeacher {
   address: string;
   identity: string;
   dob: Date;
+  avatar?: string | null;
   isActive: boolean;
-
-
   positions: any[];
   degrees: IDegree[];
   startDate: Date;
@@ -149,13 +148,12 @@ export interface ICreateTeacherRequest {
   address: string;
   identity: string;
   dob: Date | string;
-
   positions?: string[];
   degrees?: IDegree[];
   isActive?: boolean;
   startDate: Date | string;
   endDate?: Date | string;
-
+  avatar?: string;
 }
 
 export interface IUpdateTeacherRequest {
@@ -165,13 +163,12 @@ export interface IUpdateTeacherRequest {
   address?: string;
   identity?: string;
   dob?: Date | string;
-
   positions?: string[];
   degrees?: IDegree[];
   isActive?: boolean;
   startDate?: Date | string;
   endDate?: Date | string;
-
+  avatar?: string;
 }
 
 export interface IPaginatedTeacherResponse {

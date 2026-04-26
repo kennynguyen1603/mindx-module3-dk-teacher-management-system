@@ -1,10 +1,22 @@
 import { Request, Response } from 'express';
 import { OkResponse, CreatedResponse } from '@/core/success.response.js';
 import { teacherService } from '@/services/teacher.service.js';
-import { RESPONSE_MESSAGES } from '@/utils/constants.js';
+import { uploadToCloudinary } from '@/utils/fileUploader.js';
+import { BadRequestError } from '@/core/error.response.js';
 import { ObjectId } from 'mongodb';
 
 class TeacherController {
+  uploadAvatar = async (req: Request, res: Response) => {
+    if (!req.file) {
+      throw new BadRequestError('Vui lòng chọn file ảnh');
+    }
+    const url = await uploadToCloudinary(req.file, 'teachers/avatars', 'image');
+    return new OkResponse({
+      message: 'Avatar uploaded successfully',
+      data: { url },
+    });
+  };
+
   create = async (req: Request, res: Response) => {
     const {
       name,
@@ -18,6 +30,7 @@ class TeacherController {
       isActive,
       startDate,
       endDate,
+      avatar,
     } = req.validated?.body ?? req.body;
 
     const positionIds = positions?.map((id: string) => new ObjectId(id)) || [];
@@ -34,6 +47,7 @@ class TeacherController {
       isActive,
       startDate: new Date(startDate),
       endDate: endDate ? new Date(endDate) : undefined,
+      avatar,
     });
 
     return new CreatedResponse({
@@ -91,6 +105,7 @@ class TeacherController {
       isActive,
       startDate,
       endDate,
+      avatar,
     } = req.validated?.body ?? req.body;
 
     const positionIds =
@@ -108,6 +123,7 @@ class TeacherController {
       isActive,
       startDate: startDate ? new Date(startDate) : undefined,
       endDate: endDate ? new Date(endDate) : undefined,
+      avatar,
     });
 
     return new OkResponse({

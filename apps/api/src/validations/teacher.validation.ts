@@ -69,6 +69,7 @@ export const createTeacherSchema = {
       .string({ message: 'End date is required' })
       .pipe(z.coerce.date('Invalid end date'))
       .optional(),
+    avatar: z.string().url('Invalid avatar URL').optional(),
   }),
 };
 
@@ -125,6 +126,7 @@ export const updateTeacherSchema = {
       .string({ message: 'End date is required' })
       .pipe(z.coerce.date('Invalid end date'))
       .optional(),
+    avatar: z.string().url('Invalid avatar URL').optional(),
   }),
 };
 

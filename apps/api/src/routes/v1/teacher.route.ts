@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { teacherController } from '@/controllers/teacher.controller.js';
 import { validate } from '@/middlewares/validate.middleware.js';
 import { wrapAsyncHandler } from '@/utils/asyncHandler.js';
+import { uploadSingle } from '@/config/upload/multer.js';
 import {
   createTeacherSchema,
   updateTeacherSchema,
@@ -11,6 +12,13 @@ import {
 } from '@/validations/teacher.validation.js';
 
 const teacherRouter: Router = Router();
+
+// Upload avatar — must be before /:id routes
+teacherRouter.post(
+  '/upload-avatar',
+  uploadSingle('avatar'),
+  wrapAsyncHandler(teacherController.uploadAvatar),
+);
 
 // Create teacher
 teacherRouter.post(

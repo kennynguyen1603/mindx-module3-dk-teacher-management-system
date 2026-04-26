@@ -18,9 +18,6 @@ class TeacherService {
     return TeacherService.instance;
   }
 
-  /**
-   * Generate a unique 10-digit teacher code
-   */
   private async generateUniqueTeacherCode(): Promise<string> {
     let code: string;
     let isUnique = false;
@@ -45,9 +42,6 @@ class TeacherService {
     return code!;
   }
 
-  /**
-   * Create a new teacher with user information
-   */
   async createTeacher(data: {
     name: string;
     email: string;
@@ -60,8 +54,8 @@ class TeacherService {
     isActive?: boolean;
     startDate: Date;
     endDate?: Date;
+    avatar?: string;
   }): Promise<any> {
-    // Check if email already exists
     const existingUser = await userRepository.findByEmail(
       data.email.toLowerCase().trim(),
     );
@@ -69,7 +63,6 @@ class TeacherService {
       throw new ConflictError('Email already exists');
     }
 
-    // Create user first
     const userData: IUserDocument = {
       name: data.name,
       email: data.email.toLowerCase().trim(),
@@ -77,6 +70,7 @@ class TeacherService {
       address: data.address,
       identity: data.identity,
       dob: data.dob,
+      avatar: data.avatar,
       role: UserRole.TEACHER,
       status: UserStatus.ACTIVE,
       isEmailVerified: false,
@@ -89,10 +83,8 @@ class TeacherService {
     const createdUser = await userRepository.create(userData);
 
     try {
-      // Generate unique teacher code
       const teacherCode = await this.generateUniqueTeacherCode();
 
-      // Create teacher document
       const teacherData: ITeacherDocument = {
         userId: createdUser._id!,
         code: teacherCode,
@@ -108,40 +100,32 @@ class TeacherService {
 
       const createdTeacher = await teacherRepository.create(teacherData);
 
-      // Return teacher with user info
       return {
         ...createdTeacher,
         user: createdUser,
       };
     } catch (error) {
-      // Rollback: delete created user if teacher creation fails
       await userRepository.deleteById(createdUser._id!.toString());
       throw error;
     }
   }
 
-  /**
-   * Get teacher by ID with user and position details
-   */
   async getTeacher(teacherId: string): Promise<any> {
     const teacher = await teacherRepository.findById(teacherId);
     if (!teacher) {
       throw new NotFoundError('Teacher not found');
     }
 
-    // Get user details
     const user = await userRepository.findById(teacher.userId.toString());
     if (!user) {
       throw new NotFoundError('Associated user not found');
     }
 
-    // Get position details if positions exist
     const positionDetails: any[] = [];
     if (teacher.positions && teacher.positions.length > 0) {
-      const positionRepo = teacherPositionRepository;
       const fetchedPositions = await Promise.all(
         teacher.positions.map(async (posId: any) => {
-          return positionRepo.findById(posId.toString());
+          return teacherPositionRepository.findById(posId.toString());
         }),
       );
       positionDetails.push(...fetchedPositions.filter((p) => p !== null));
@@ -156,9 +140,8 @@ class TeacherService {
       address: user.address || '',
       identity: user.identity || '',
       dob: user.dob,
+      avatar: user.avatar || null,
       isActive: teacher.isActive,
-
-
       positions: positionDetails,
       degrees: teacher.degrees,
       startDate: teacher.startDate,
@@ -168,9 +151,6 @@ class TeacherService {
     };
   }
 
-  /**
-   * List teachers with pagination and aggregation
-   */
   async listTeachers(
     filter?: {
       search?: string;
@@ -181,8 +161,6 @@ class TeacherService {
   ): Promise<{ teachers: any[]; total: number }> {
     const aggregationPipeline: any[] = [];
 
-
-    // Add search filter if provided
     if (filter?.search) {
       aggregationPipeline.push({
         $match: {
@@ -191,7 +169,6 @@ class TeacherService {
       });
     }
 
-    // Add isActive filter if provided
     if (filter?.isActive !== undefined) {
       aggregationPipeline.push({
         $match: { isActive: filter.isActive },
@@ -204,7 +181,6 @@ class TeacherService {
       limit,
     );
 
-    // Enrich with additional user data
     const enrichedTeachers = result.teachers.map((teacher: any) => ({
       _id: teacher._id,
       code: teacher.code,
@@ -214,9 +190,8 @@ class TeacherService {
       address: teacher.user?.address || '',
       identity: teacher.user?.identity || '',
       dob: teacher.user?.dob,
+      avatar: teacher.user?.avatar || null,
       isActive: teacher.isActive,
-
-
       positions: teacher.positionDetails || [],
       degrees: teacher.degrees || [],
       startDate: teacher.startDate,
@@ -230,9 +205,6 @@ class TeacherService {
     };
   }
 
-  /**
-   * Update teacher information
-   */
   async updateTeacher(
     teacherId: string,
     data: Partial<{
@@ -247,15 +219,14 @@ class TeacherService {
       isActive?: boolean;
       startDate?: Date;
       endDate?: Date;
+      avatar?: string;
     }>,
   ): Promise<any> {
-    // Check if teacher exists
     const teacher = await teacherRepository.findById(teacherId);
     if (!teacher) {
       throw new NotFoundError('Teacher not found');
     }
 
-    // Separate user data and teacher data
     const userUpdateData: Partial<IUserDocument> = {};
     const teacherUpdateData: Partial<ITeacherDocument> = {};
 
@@ -267,6 +238,7 @@ class TeacherService {
     if (data.address !== undefined) userUpdateData.address = data.address;
     if (data.identity !== undefined) userUpdateData.identity = data.identity;
     if (data.dob !== undefined) userUpdateData.dob = data.dob;
+    if (data.avatar !== undefined) userUpdateData.avatar = data.avatar;
 
     if (data.positions !== undefined)
       teacherUpdateData.positions = data.positions;
@@ -276,7 +248,6 @@ class TeacherService {
       teacherUpdateData.startDate = data.startDate;
     if (data.endDate !== undefined) teacherUpdateData.endDate = data.endDate;
 
-    // Update user if there's user data
     if (Object.keys(userUpdateData).length > 0) {
       await userRepository.updateById(
         teacher.userId.toString(),
@@ -284,7 +255,6 @@ class TeacherService {
       );
     }
 
-    // Update teacher
     const updatedTeacher = await teacherRepository.update(
       teacherId,
       teacherUpdateData,
@@ -293,22 +263,18 @@ class TeacherService {
       throw new NotFoundError('Failed to update teacher');
     }
 
-    // Get updated user data
     const user = await userRepository.findById(teacher.userId.toString());
 
-    // Get position details if positions exist
     const positionDetails: any[] = [];
     if (updatedTeacher.positions && updatedTeacher.positions.length > 0) {
-      const positionRepo = teacherPositionRepository;
       const fetchedPositions = await Promise.all(
         updatedTeacher.positions.map(async (posId: any) => {
-          return positionRepo.findById(posId.toString());
+          return teacherPositionRepository.findById(posId.toString());
         }),
       );
       positionDetails.push(...fetchedPositions.filter((p) => p !== null));
     }
 
-    // Return formatted response
     return {
       _id: updatedTeacher._id,
       code: updatedTeacher.code,
@@ -318,8 +284,8 @@ class TeacherService {
       address: user?.address || '',
       identity: user?.identity || '',
       dob: user?.dob,
+      avatar: user?.avatar || null,
       isActive: updatedTeacher.isActive,
-
       positions: positionDetails,
       degrees: updatedTeacher.degrees,
       startDate: updatedTeacher.startDate,
@@ -329,9 +295,6 @@ class TeacherService {
     };
   }
 
-  /**
-   * Delete teacher (soft delete)
-   */
   async deleteTeacher(teacherId: string): Promise<boolean> {
     const teacher = await teacherRepository.findById(teacherId);
     if (!teacher) {

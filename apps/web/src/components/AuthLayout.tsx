@@ -19,7 +19,8 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({
         <div className="auth-card">
           <div className="auth-header">
             <div className="auth-logo">
-              <div className="logo-icon">📚</div>
+              <div className="logo-mark"><span>MX</span></div>
+              <span className="logo-name">MindX</span>
             </div>
             <h1 className="auth-title">{title}</h1>
             <p className="auth-subtitle">{subtitle}</p>
